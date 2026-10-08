@@ -1,0 +1,27 @@
+cff-version: 1.2.0
+message: "If you use this code, please cite the accompanying manuscript."
+title: "Universal event reconstruction: MLP, DETR and LGaTr"
+type: software
+version: 0.1.0
+license: MIT
+authors:
+  - name: Top-Lab
+preferred-citation:
+  type: unpublished
+  title: "Lorentz-Equivariant Geometric Algebra Transformers for Top-Quark Event Reconstruction"
+  year: 2026
+  authors:
+    - family-names: Abasov
+      given-names: E.
+    - family-names: Dudko
+      given-names: L.
+    - family-names: Markina
+      given-names: A.
+    - family-names: Perfilov
+      given-names: M.
+    - family-names: Volkov
+      given-names: P.
+    - family-names: Vorotnikov
+      given-names: G.
+    - family-names: Zaborenko
+      given-names: A.

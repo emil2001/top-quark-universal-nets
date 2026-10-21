@@ -90,11 +90,7 @@ An independent synthetic alternative is also available:
 ```bash
 uv run python scripts/make_synthetic_cache.py --output data/synthetic.pkl --seed 2025
 ```
-
-This produces 32 training and 8 test events. It is a deterministic illustrative
-generator, not a Monte Carlo simulation. Its 51 HLR targets exercise the
-interface and do not implement the research observables. Tests use this
-generator, independently of the supplied sample.
+This produces 32 training and 8 test events.
 
 Run a small CPU example for each model:
 
@@ -114,72 +110,6 @@ uv run python train.py --cache-path data/example.pkl --version vx-full \
   --v5-embed-dim 32 --v5-n-heads 2 --v5-n-enc-layers 1 --v5-n-dec-layers 1 \
   --ga-channels 4 --ga-heads 1 --run-name demo-lgatr \
   --checkpoint-dir checkpoints/vx-full
-```
-
-These reduced configurations and eight-event sample are intended for a quick
-check. Metrics on two test events cannot measure physics performance. MLflow writes to local `mlruns/` by
-default; no tracking server or account is needed. Each checkpoint directory
-contains a best-validation checkpoint and `last.ckpt`. Generated files are
-ignored by Git.
-
-Load a checkpoint and produce regression, classification and assignment plots:
-
-```bash
-uv run python scripts/infer_and_plot.py --version vx-full \
-  --checkpoint checkpoints/vx-full/last.ckpt --strict-load \
-  --cache-path data/example.pkl --device cpu --max-samples 2 \
-  --outdir outputs/lgatr --quick-metrics
-```
-
-Repeat with `--version v1 --checkpoint checkpoints/v1/last.ckpt` or
-`--version v5 --checkpoint checkpoints/v5/last.ckpt`, choosing a separate output
-directory. Pass `--hlr` to include high-level regression plots.
-
-The same command can load a locally logged best checkpoint with `--run-name
-demo-lgatr` in place of `--checkpoint`. Use the same tracking URI and experiment
-name as training if you override either of them.
-
-Check the physical character of LGaTr's predicted four-momenta:
-
-```bash
-uv run python scripts/mass_shell_sanity.py --version vx-full \
-  --checkpoint checkpoints/vx-full/last.ckpt --cache-path data/example.pkl \
-  --device cpu --max-samples 2 --outdir outputs/mass-shell
-```
-
-## Using your own data
-
-Training and evaluation consume a local pickle cache containing prebatched
-PyTorch tensors and normalization statistics. See [the data format](docs/data-format.md)
-for shapes, units, label encodings, padding and an example of creating a cache.
-ROOT readers and laboratory-specific dataset paths are not part of this
-distribution. Only load pickle caches and checkpoints from sources you trust.
-
-The cache uses **contract v2**. LGaTr uses physical detector four-momenta and
-**signed-energy output contract v3**; incompatible older checkpoints are
-rejected. Details and the differences from the manuscript are described in
-[the model contracts](docs/model-contracts.md).
-
-## Development
-
-```bash
-uv run pytest -q
-uv run ruff check .
-uv run python -m compileall -q pat_embedder scripts train.py
-```
-
-Tests generate their own synthetic data and require neither a research cache
-nor an MLflow server. They cover model shapes, finite losses and gradients,
-checkpoint loading, detector masks, set matching, energy decoding, physical
-constraints and Lorentz-equivariant layers. End-to-end training and checkpoint
-inference are exercised for all three supported model families.
-
-After changing dependencies, regenerate both installation manifests:
-
-```bash
-uv lock
-uv export --locked --no-dev --no-emit-project --emit-index-url \
-  --no-annotate --no-header --no-hashes --output-file requirements.txt
 ```
 
 ## Citation and license
